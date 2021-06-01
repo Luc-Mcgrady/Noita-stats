@@ -4,13 +4,12 @@ import xml_python
 def as_attr_dict(entry: xml_python.Element):
     out = entry.attrib
     for item in entry:
-        suffix = ''  # Suffixes so we don't overwrite elements
         tag = item.tag
 
-        if f"{tag}{suffix}" in out:
-            suffix = 1
-            while f"{tag}{suffix}" in out:
-                suffix += 1
-
-        out = {**out, f"{tag}{suffix}": as_attr_dict(item)}
+        if tag in out:
+            if type(out[tag]) != list:
+                out[tag] = [out[tag]]
+            out[tag].append(as_attr_dict(item))
+        else:
+            out = {**out, tag: as_attr_dict(item)}
     return out
