@@ -22,5 +22,10 @@ def sum_dicts(lst: list[dict]):
     return out
 
 
+def sum_classes(lst: list):
+    out_dict = json_dump_load(dict(lst), default=lambda o: o.__dict__)
+    return sum_dicts(list(out_dict.values()))
+
+
 def json_dump_load(x: dict, **kwargs) -> dict:
     return json.loads(json.dumps(x, **kwargs))
