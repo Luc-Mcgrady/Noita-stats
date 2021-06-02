@@ -20,23 +20,8 @@ def _e_check(to_check, conv_class=None):
         return to_check
 
 
-class EnemyKill:
-    def __init__(self, xml: dict):
-        self.name = xml["key"]
-        self.count = int(xml["value"])
-
-
-class BiomeVisit(EnemyKill):  # Same format as enemy kills surprisingly
-    def __init__(self, xml: dict):
-        super().__init__(xml)
-
-
-class DeathCause:
-    def __init__(self, xml: dict):
-        cause_type = xml['key'].split(' | ')
-        self.cause = cause_type[0]
-        self.damage_type = cause_type[1]
-        self.hits = int(xml['value'])
+def _xml_key_val_to_dict(xml: list[dict]):
+    return {a["key"]: int(a["value"]) for a in xml}
 
 
 class RunStats:
@@ -53,10 +38,10 @@ class XmlKills:
         self.player_kill_count = int(xml['player_kills'])
 
         self.player_kills = xml['kill_map']
-        self.player_kills = _e_check(self.player_kills, EnemyKill)
+        self.player_kills = _xml_key_val_to_dict(_e_check(self.player_kills))
 
         self.death_map = xml['death_map']
-        self.death_map = _e_check(self.death_map, DeathCause)
+        self.death_map = _xml_key_val_to_dict(_e_check(self.death_map))
 
 
 class XmlStats:
@@ -81,7 +66,7 @@ class XmlStats:
         self.wands_edited = int(stats["wands_edited"])
 
         self.biomes_visited = xml["biomes_visited"]
-        self.biomes_visited = _e_check(self.biomes_visited, BiomeVisit)
+        self.biomes_visited = _xml_key_val_to_dict(_e_check(self.biomes_visited))
 
 
 def load_stats():
