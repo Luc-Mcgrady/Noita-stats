@@ -3,15 +3,15 @@
 
 {% for line in lines %}
 
-    {% if line[0] == 1 %}
-        <h3>{{line[1]}}: {{line[2]}}</h3>
+    {% if line.new_indent == 1 %}
+        <h3>{{line.key}}: {{line.value}}</h3>
     {% else %}
-        <p>{{line[1]}}: {{line[2]}}</p>
+        <p>{{line.key}}: {{line.value}}</p>
     {% endif %}
 
-    {% if line[0] == 1 %}
+    {% if line.new_indent == 1 %}
         <div class="section">
-    {% elif line[0] == -1 %}
+    {% elif line.new_indent == -1 %}
         </div>
     {% endif %}
 {% endfor %}
