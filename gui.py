@@ -6,6 +6,20 @@ import dict_flatten
 import stat_loader
 
 
+def graph_keys(key_path: list[str], data: dict):
+    def get_keys(keys: list[str], dct: dict):
+        to_get = dct
+        for key in keys:
+            if not isinstance(to_get, dict):
+                to_get = to_get.__dict__
+            to_get = to_get.get(key, 0)
+        return to_get
+
+    to_plot = [get_keys(key_path, a.__dict__) for a in data.values()]
+
+    plt.plot([str(a) for a in range(len(to_plot))], to_plot)
+
+
 def make_server(data):
     app = flask.Flask(__name__)
 
@@ -21,21 +35,12 @@ def make_server(data):
 
     @app.route('/graph/<path:key_path>')
     def graph(key_path: str):
-
-        def get_keys(dct: dict, keys: list[str]):
-            to_get = dct
-            for key in keys:
-                if not isinstance(to_get, dict):
-                    to_get = to_get.__dict__
-                to_get = to_get.get(key, 0)
-            return to_get
-
-        key_path = key_path.split('/')
-
-        to_plot = [get_keys(a.__dict__, key_path) for a in data.values()]
+        key_path_array = key_path.split('/')
 
         plt.close()
-        plt.plot([str(a) for a in range(len(to_plot))], to_plot)
+        graph_keys(key_path_array, data)
+        plt.title(f"Graph of \"{key_path.replace('_', ' ')}\" per run")
+
         plt.show()
 
         return '', 204
