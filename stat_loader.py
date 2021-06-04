@@ -1,5 +1,5 @@
 import xml_python
-import xmlfuncs
+import xml_funcs
 import os
 
 
@@ -78,7 +78,7 @@ def load_stats():
 
     files = os.listdir(stats_path)
     data = {
-        file: xmlfuncs.as_attr_dict(
+        file: xml_funcs.as_attr_dict(
             xml_python.parse(stats_path + file).getroot()
         )
         for file in files
