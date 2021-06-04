@@ -16,7 +16,7 @@ def make_server(data):
     def main():
         return flask.render_template("line_template.html", lines=lines)
 
-    @app.route('/<path:key_path>')
+    @app.route('/graph/<path:key_path>')
     def graph(key_path: str):
 
         def get_keys(dct: dict, keys: list[str]):
@@ -33,10 +33,9 @@ def make_server(data):
 
         plt.close()
         plt.plot([str(a) for a in range(len(to_plot))], to_plot)
-        print("You should see a graph now, the webpage wont reload till you close it")
         plt.show()
 
-        return """<h1>You have just closed the graph</h1><p>hit back in the browser to get back to the list</p>"""
+        return '', 204
 
     return app
 
