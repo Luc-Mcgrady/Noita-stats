@@ -1,4 +1,5 @@
 import flask
+import webbrowser
 from matplotlib import pyplot as plt
 
 import class_sum
@@ -66,4 +67,5 @@ def make_server(data):
 
 if __name__ == '__main__':
     server = make_server(stat_loader.load_stats())
-    server.run()
+    webbrowser.open("http://127.0.0.1:5010")
+    server.run(port="5010")
