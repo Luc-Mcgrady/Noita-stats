@@ -6,7 +6,11 @@
     {% if line.new_indent == 1 %}
         <h3>{{line.key}}: {{line.value}}</h3>
     {% else %}
-        <p><a href='/graph/{{ "/".join(line.key_path) }}'>Graph</a> {{line.key}}: {{line.value}}</p>
+        <p>
+            <a href='/graph/{{ "/".join(line.key_path) }}'>Graph</a>
+            <a href='/graph_time/{{ "/".join(line.key_path) }}'>Graph over time</a>
+            {{line.key}}: {{line.value}}
+        </p>
     {% endif %}
 
     {% if line.new_indent == 1 %}
