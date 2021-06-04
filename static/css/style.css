@@ -1,4 +1,20 @@
-
 div.section {
     margin-left:40px;
+    border-left-style: solid;
+    padding-left: 5px;
+    border-left-color: #bccdea;
+    border-radius: 10px;
+}
+
+p {
+    font-family: system-ui;
+    color: antiquewhite;
+}
+
+h3 {
+    font-family: sans-serif;
+}
+
+body {
+    background: cornflowerblue;
 }

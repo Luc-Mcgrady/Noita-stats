@@ -12,6 +12,9 @@ def make_server(data):
     totals = class_sum.sum_classes(data)
     lines = dict_flatten.get_lines(totals)
 
+    for line in lines:
+        line.key = line.key.replace('_', ' ')
+
     @app.route('/')
     def main():
         return flask.render_template("line_template.html", lines=lines)

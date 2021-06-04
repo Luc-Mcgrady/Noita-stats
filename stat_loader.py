@@ -39,6 +39,8 @@ class XmlKills:
 
         self.player_kills = xml['kill_map']
         self.player_kills = _xml_key_val_to_dict(_e_check(self.player_kills))
+        self.player_kills = {" ".join(key.split('_')[::-1]): val for key,val in self.player_kills.items()}
+        # Reverse order for adjectives
 
         self.death_map = xml['death_map']
         self.death_map = _xml_key_val_to_dict(_e_check(self.death_map))

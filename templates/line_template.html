@@ -11,7 +11,9 @@
 
     {% if line.new_indent == 1 %}
         <div class="section">
-    {% elif line.new_indent == -1 %}
-        </div>
+    {% else %}
+        {% for _ in range(-line.new_indent)%}
+            </div>
+        {% endfor %}
     {% endif %}
 {% endfor %}
