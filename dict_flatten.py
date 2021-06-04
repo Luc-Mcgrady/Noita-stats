@@ -24,5 +24,5 @@ def get_lines(dct: dict, _key_path=None) -> list[LineData]:
                 out += new_out
                 out[-1].new_indent = -1
         else:
-            out.append(LineData(tuple(_key_path), 0, str(key), str(val)))
+            out.append(LineData(tuple(_key_path + [key]), 0, str(key), str(val)))
     return out
