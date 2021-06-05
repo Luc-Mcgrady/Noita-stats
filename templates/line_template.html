@@ -1,23 +1,30 @@
+<!DOCTYPE html>
 
-<link href="/static/css/style.css" type="text/css" rel="stylesheet" />
+<head>
+    <link href="/static/css/style.css" type="text/css" rel="stylesheet" />
+    <title>Noita stats</title>
+</head>
 
-{% for line in lines %}
+<body>
+    {% for line in lines %}
 
-    {% if line.new_indent == 1 %}
-        <h3>{{line.key}}: {{line.value}}</h3>
-    {% else %}
-        <p>
-            <a href='/graph/{{ "/".join(line.key_path) }}'>Graph</a>
-            <a href='/graph_time/{{ "/".join(line.key_path) }}'>Graph over time</a>
-            {{line.key}}: {{line.value}}
-        </p>
-    {% endif %}
+        {% if line.new_indent == 1 %}
+            <h3>{{line.key}}: {{line.value}}</h3>
+        {% else %}
+            <p>
+                <a href='/graph/{{ "/".join(line.key_path) }}'>Graph</a>
+                <a href='/graph_time/{{ "/".join(line.key_path) }}'>Graph over time</a>
+                {{line.key}}: {{line.value}}
+            </p>
+        {% endif %}
 
-    {% if line.new_indent == 1 %}
-        <div class="section">
-    {% else %}
-        {% for _ in range(-line.new_indent)%}
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endfor %}
+        {% if line.new_indent == 1 %}
+            <div class="section">
+        {% else %}
+            {% for _ in range(-line.new_indent)%}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    {% endfor %}
+</body>
