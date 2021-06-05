@@ -10,7 +10,7 @@ class LineData:
 
 
 def get_lines(dct: dict, _key_path=None) -> list[LineData]:
-    # (key_path, new_indent, key, value,)
+    """:return: a list representing a recursive dict for use iterating through"""
 
     if _key_path is None:
         _key_path = []

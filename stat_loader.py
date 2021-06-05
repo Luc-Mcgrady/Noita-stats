@@ -4,6 +4,7 @@ import os
 
 
 def _check_list(to_check):
+    """If a value is not a list, pack it into one and return it, else just returns the value"""
     if type(to_check) != list:
         return [to_check]
     else:
@@ -11,8 +12,15 @@ def _check_list(to_check):
 
 
 def _e_check(to_check, conv_class=None):
+    """
+    :param to_check: the dictionary to check
+    :param conv_class: Unused, used to convert the elements of the return to a class
+    :return: to_check['E'] Or an empty list if that value isn't there
+    """
     if "E" in to_check:
         to_check = _check_list(to_check['E'])
+    else:
+        return []
 
     if conv_class is not None:
         return [conv_class(a) for a in to_check]
@@ -25,6 +33,8 @@ def _xml_key_val_to_dict(xml: list[dict]):
 
 
 class RunStats:
+    """Holds a representation of both the 2 files that are saved"""
+
     def __init__(self, kills_xml: dict, stats_xml: dict):
         self.kills = XmlKills(kills_xml)
         self.stats = XmlStats(stats_xml)
@@ -39,7 +49,7 @@ class XmlKills:
 
         self.player_kills = xml['kill_map']
         self.player_kills = _xml_key_val_to_dict(_e_check(self.player_kills))
-        self.player_kills = {" ".join(key.split('_')[::-1]): val for key,val in self.player_kills.items()}
+        self.player_kills = {" ".join(key.split('_')[::-1]): val for key, val in self.player_kills.items()}
         # Reverse order for adjectives
 
         self.death_map = xml['death_map']
@@ -71,20 +81,27 @@ class XmlStats:
         self.biomes_visited = _xml_key_val_to_dict(_e_check(self.biomes_visited))
 
 
-def load_stats():
-    stats_path = os.path.abspath(os.environ.get('APPDATA') + "/../LocalLow/Nolla_Games_Noita/save00/stats/sessions") \
-                 + '\\'
-    #  ^ This is what you need to change if doesnt work correctly ^
+STATS_PATH = os.path.abspath(os.environ.get('APPDATA') + "/../LocalLow/Nolla_Games_Noita/save00/stats/sessions") \
+             + '\\'
 
-    files = os.listdir(stats_path)
+
+def load_stats() -> dict[str, dict]:
+    """:return: The players stats in the form dict[Filename: loaded stats]"""
+    global STATS_PATH
+
+    if not os.path.isdir(STATS_PATH):
+        STATS_PATH = input(f"Stats not found at regular directory of {STATS_PATH}, provide a replacement directory?: ")
+
+    files = os.listdir(STATS_PATH)
+
     data = {
         file: xml_funcs.as_attr_dict(
-            xml_python.parse(stats_path + file).getroot()
+            xml_python.parse(STATS_PATH + file).getroot()
         )
         for file in files
     }
 
-    data = {key: RunStats(kills, stats) for
+    data = {key: RunStats(kills, stats) for  # Stats are stored in 2 files per run by the game,
             kills, (key, stats) in
             zip(list(data.values())[::2], list(data.items())[1::2])}
 

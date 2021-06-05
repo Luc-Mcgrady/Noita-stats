@@ -1,3 +1,4 @@
+# This is the file that is compiled for releases
 import flask
 import webbrowser
 from matplotlib import pyplot as plt
@@ -8,24 +9,26 @@ import stat_loader
 
 
 def get_keys(keys: list[str], dct: dict):
+    """Go several keys into a dict"""
     to_get = dct
     for key in keys:
-        if not isinstance(to_get, dict):
+        if not isinstance(to_get, dict):  # Get attributes if object isn't dict
             to_get = to_get.__dict__
         to_get = to_get.get(key, 0)
     return to_get
 
 
 def graph_keys(key_path: list[str], data: dict):
+    """Redundant function which I planned to use in both the graph and graph/time functions but became overly complex"""
     to_plot = [get_keys(key_path, a.__dict__) for a in data.values()]
 
     plt.plot([str(a) for a in range(len(to_plot))], to_plot)
 
 
-def make_server(data):
+def make_server(data: dict[str, dict]):
     app = flask.Flask(__name__)
 
-    totals = class_sum.sum_classes(data)
+    totals = class_sum.sum_dict_classes(data)
     lines = dict_flatten.get_lines(totals)
 
     for line in lines:
@@ -45,13 +48,14 @@ def make_server(data):
 
         plt.show()
 
-        return '', 204
+        return '', 204  # Returns nothing to prevent website switch
 
     @app.route('/graph_time/<path:key_path>')
     def graph_over_time(key_path: str):
         key_path_array = key_path.split('/')
         to_plot = [
             get_keys(key_path_array, a.__dict__) / get_keys(["stats", "playtime"], a.__dict__)
+            # Only functional difference from regular graph function ^
             for a in data.values()]
 
         plt.close()
@@ -60,12 +64,12 @@ def make_server(data):
 
         plt.show()
 
-        return '', 204
+        return '', 204  # Returns nothing to prevent website switch
 
     return app
 
 
 if __name__ == '__main__':
     server = make_server(stat_loader.load_stats())
-    webbrowser.open("http://127.0.0.1:5010")
+    webbrowser.open("http://127.0.0.1:5010")  # Relies on browser being slower than server start
     server.run(port="5010")

@@ -2,6 +2,7 @@ import xml_python
 
 
 def as_attr_dict(entry: xml_python.Element):
+    """Converts an xml tree to a dict, includes attributes"""
     out = entry.attrib
     for item in entry:
         tag = item.tag

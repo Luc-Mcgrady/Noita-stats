@@ -34,9 +34,14 @@ def sum_dicts(lst: list[dict]):
         return out
 
 
-def sum_classes(lst: list):
-    out_dict = json_dump_load(dict(lst), default=lambda o: o.__dict__)
-    return sum_dicts(list(out_dict.values()))
+def sum_dict_classes(dct: dict):
+    out_dict = json_dump_load(dct, default=lambda o: o.__dict__)  # Change every class to its dict form
+    return sum_dicts(list(out_dict.values()))  # Get the sum of these dicts values added (recursive)
+
+
+def sum_list_classes(lst: list):
+    """Sums a list of dictionary's but first converts any classes attributes into """
+    return sum_dict_classes(dict(lst))
 
 
 def json_dump_load(x: dict, **kwargs) -> dict:
