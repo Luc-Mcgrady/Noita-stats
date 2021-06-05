@@ -72,4 +72,4 @@ def make_server(data: dict[str, dict]):
 if __name__ == '__main__':
     server = make_server(stat_loader.load_stats())
     webbrowser.open("http://127.0.0.1:5010")  # Relies on browser being slower than server start
-    server.run(port="5010")
+    server.run(port="5010", threaded=False)
