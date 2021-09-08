@@ -1,5 +1,6 @@
 import xml_python
 import xml_funcs
+import traceback
 import os
 
 
@@ -94,12 +95,14 @@ def load_stats() -> dict[str, dict]:
 
     files = os.listdir(STATS_PATH)
 
-    data = {
-        file: xml_funcs.as_attr_dict(
-            xml_python.parse(STATS_PATH + file).getroot()
-        )
-        for file in files
-    }
+    data = {}
+    for file in files:
+        try:
+            data[file] = xml_funcs.as_attr_dict(
+                xml_python.parse(STATS_PATH + file).getroot()
+            )
+        except Exception as e:
+            print(f"Failed to parse file: \"{file}\" with exception: {e!r}")
 
     data = {key: RunStats(kills, stats) for  # Stats are stored in 2 files per run by the game,
             kills, (key, stats) in
