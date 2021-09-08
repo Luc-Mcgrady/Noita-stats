@@ -1,6 +1,5 @@
 import xml_python
 import xml_funcs
-import traceback
 import os
 
 
