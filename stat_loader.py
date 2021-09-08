@@ -103,6 +103,10 @@ def load_stats() -> dict[str, dict]:
 
     data = {key: RunStats(kills, stats) for  # Stats are stored in 2 files per run by the game,
             kills, (key, stats) in
-            zip(list(data.values())[::2], list(data.items())[1::2])}
+            zip(
+                list([val for key, val in data.items() if key.endswith("kills.xml")]),
+                list([(key, val) for key, val in data.items() if key.endswith("stats.xml")])
+            )
+            }
 
     return data
