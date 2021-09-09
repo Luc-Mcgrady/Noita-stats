@@ -1,6 +1,7 @@
-import xml_python
+import xml.etree.ElementTree
 import xml_funcs
 import os
+from itertools import zip_longest
 
 
 def _check_list(to_check):
@@ -9,6 +10,13 @@ def _check_list(to_check):
         return [to_check]
     else:
         return to_check
+
+
+def _none_to_int(val):
+    if val is None:
+        return 0
+    else:
+        return val
 
 
 def _e_check(to_check, conv_class=None):
@@ -42,7 +50,10 @@ class RunStats:
 
 class XmlKills:
 
-    def __init__(self, xml: dict):
+    def __init__(self, xml: dict = None):
+        if xml is None:
+            return
+
         self.kills = int(xml['kills'])
         self.player_projectile_count = int(xml['player_projectile_count'])
         self.player_kill_count = int(xml['player_kills'])
@@ -57,25 +68,28 @@ class XmlKills:
 
 
 class XmlStats:
-    def __init__(self, xml: dict):
-        stats = xml["stats"]
+    def __init__(self, xml: dict = None):
+        if xml is None:
+            return
 
-        self.biomes_visited_with_wands = int(stats["biomes_visited_with_wands"])  # Not a clue
-        self.damage_taken = float(stats["damage_taken"])
-        self.dead = bool(stats["dead"])
-        self.death_pos_x = float(stats["death_pos.x"])
-        self.death_pos_y = float(stats["death_pos.y"])  # Same as depth
-        self.enemies_killed = int(stats["enemies_killed"])  # Same as player kill count I assume (maybe w/o friendly's)
-        self.gold = int(stats["gold"])
-        self.gold_all = int(stats["gold_all"])
-        self.items = int(stats["items"])
-        self.kicks = int(stats["kicks"])
-        self.visited_count = int(stats["places_visited"])
-        self.playtime = float(stats["playtime"])
-        self.playtime_formatted = stats["playtime_str"]
-        self.shots_fired = int(stats["projectiles_shot"])
-        self.teleports = int(stats["teleports"])
-        self.wands_edited = int(stats["wands_edited"])
+        stats: dict = xml["stats"]
+
+        self.biomes_visited_with_wands = int(_none_to_int(stats.get("biomes_visited_with_wands")))  # Not a clue
+        self.damage_taken = float(_none_to_int(stats.get("damage_taken")))
+        self.dead = bool(_none_to_int(stats.get("dead")))
+        self.death_pos_x = float(_none_to_int(stats.get("death_pos.x")))
+        self.death_pos_y = float(_none_to_int(stats.get("death_pos.y")))  # Same as depth
+        self.enemies_killed = int(_none_to_int(stats.get("enemies_killed")))  # Same as player kill count I assume (maybe w/o friendly's)
+        self.gold = int(_none_to_int(stats.get("gold")))
+        self.gold_all = int(_none_to_int(stats.get("gold_all")))
+        self.items = int(_none_to_int(stats.get("items")))
+        self.kicks = int(_none_to_int(stats.get("kicks")))
+        self.visited_count = int(_none_to_int(stats.get("places_visited")))
+        self.playtime = float(_none_to_int(stats.get("playtime")))
+        self.playtime_formatted = _none_to_int(stats.get("playtime_str"))
+        self.shots_fired = int(_none_to_int(stats.get("projectiles_shot")))
+        self.teleports = int(_none_to_int(stats.get("teleports")))
+        self.wands_edited = int(_none_to_int(stats.get("wands_edited")))
 
         self.biomes_visited = xml["biomes_visited"]
         self.biomes_visited = _xml_key_val_to_dict(_e_check(self.biomes_visited))
@@ -96,16 +110,20 @@ def load_stats() -> dict[str, dict]:
 
     data = {}
     for file in files:
+
+        with open(STATS_PATH + file, 'r') as f:
+            contents = f.read()
+            contents = contents.replace(':', '')
         try:
             data[file] = xml_funcs.as_attr_dict(
-                xml_python.parse(STATS_PATH + file).getroot()
+                xml.etree.ElementTree.fromstring(contents)
             )
         except Exception as e:
             print(f"Failed to parse file: \"{file}\" with exception: {e!r}")
 
     data = {key: RunStats(kills, stats) for  # Stats are stored in 2 files per run by the game,
             kills, (key, stats) in
-            zip(
+            zip_longest(
                 list([val for key, val in data.items() if key.endswith("kills.xml")]),
                 list([(key, val) for key, val in data.items() if key.endswith("stats.xml")])
             )

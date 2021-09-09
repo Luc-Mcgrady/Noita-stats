@@ -9,16 +9,20 @@ def sum_dicts(lst: list[dict]):
     checked_keys = []
 
     for dct in lst:
+
+        if not isinstance(dct, dict):
+            continue
+
         for key, val in dct.items():
             if key in checked_keys:
                 continue
             else:
                 checked_keys.append(key)
 
-            if isinstance(val, list) and isinstance(val[0], dict):
-                all_vals = [sum_dicts(a[key]) for a in lst]
+            if isinstance(val, list):
+                all_vals = [sum_dicts(a[key]) for a in lst if isinstance(a, dict)]
             else:
-                all_vals = [a.get(key, 0) for a in lst]
+                all_vals = [a.get(key, 0) for a in lst if a != 0]
 
             if isinstance(val, dict):
                 out[key] = sum_dicts(all_vals)
