@@ -13,7 +13,10 @@ def get_keys(keys: list[str], dct: dict):
     to_get = dct
     for key in keys:
         if not isinstance(to_get, dict):  # Get attributes if object isn't dict
-            to_get = to_get.__dict__
+            if hasattr(to_get, "__dict__"):
+                to_get = to_get.__dict__
+            else:
+                return 0
         to_get = to_get.get(key, 0)
     return to_get
 
