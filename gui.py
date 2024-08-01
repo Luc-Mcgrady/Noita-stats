@@ -25,7 +25,8 @@ def graph_keys(key_path: list[str], data: dict):
     """Redundant function which I planned to use in both the graph and graph/time functions but became overly complex"""
     to_plot = [get_keys(key_path, a.__dict__) for a in data.values()]
 
-    plt.plot([str(a) for a in range(len(to_plot))], to_plot)
+    plt.bar([str(a) for a in range(len(to_plot))], to_plot)
+    plt.xticks(range(0, len(data), len(data) // 15))
 
 
 def make_server(data: dict[str, dict]):
