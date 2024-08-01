@@ -1,8 +1,8 @@
 import xml.etree.ElementTree
 import xml_funcs
 import os
+import platform
 from itertools import zip_longest
-
 
 def _check_list(to_check):
     """If a value is not a list, pack it into one and return it, else just returns the value"""
@@ -94,9 +94,13 @@ class XmlStats:
         self.biomes_visited = xml["biomes_visited"]
         self.biomes_visited = _xml_key_val_to_dict(_e_check(self.biomes_visited))
 
-
-STATS_PATH = os.path.abspath(os.environ.get('APPDATA') + "/../LocalLow/Nolla_Games_Noita/save00/stats/sessions") \
-             + '\\'
+STATS_PATH = (
+            os.path.abspath(os.environ.get('APPDATA') + "/../LocalLow/Nolla_Games_Noita/save00/stats/sessions") \
+            + '\\'
+            if platform.system().startswith("Win") else 
+            os.path.expanduser("~/.steam/steam/steamapps/compatdata/881100/pfx/drive_c/users/steamuser/AppData/LocalLow/Nolla_Games_Noita/save00/stats/sessions")
+            + '/'
+            )
 
 
 def load_stats() -> dict[str, dict]:
